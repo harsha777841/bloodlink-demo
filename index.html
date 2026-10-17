@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BloodLink — Blood Bank Demo</title>
+  <style>
+    :root {
+      --red: #b42332;
+      --red-dark: #8f1825;
+      --ink: #20242b;
+      --muted: #68717d;
+      --line: #e5e8ec;
+      --bg: #f5f7f9;
+      --white: #fff;
+      --green: #18794e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font: 15px/1.5 system-ui, -apple-system, Segoe UI, sans-serif;
+    }
+
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar {
+      max-width: 1100px;
+      margin: auto;
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--red);
+      font-size: 20px;
+      font-weight: 750;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: var(--red);
+      font-size: 20px;
+    }
+
+    .demo-label {
+      padding: 5px 10px;
+      border-radius: 20px;
+      color: #7a4d00;
+      background: #fff2d6;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 28px auto;
+      padding: 0 22px 40px;
+    }
+
+    h1 { margin: 0 0 5px; font-size: 28px; }
+    h2 { margin: 0 0 16px; font-size: 18px; }
+    p { margin: 0; }
+    .subheading { margin-bottom: 22px; color: var(--muted); }
+
+    .notice {
+      margin-bottom: 20px;
+      padding: 12px 14px;
+      border: 1px solid #f1d28b;
+      border-radius: 10px;
+      color: #654b13;
+      background: #fff9e9;
+      font-size: 13px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .card, .stat {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--white);
+      box-shadow: 0 2px 8px #17212b08;
+    }
+
+    .stat { padding: 16px; }
+    .stat span { display: block; color: var(--muted); font-size: 13px; }
+    .stat strong { display: block; margin-top: 5px; font-size: 25px; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card { padding: 20px; }
+
+    label {
+      display: block;
+      margin: 13px 0 6px;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px 11px;
+      border: 1px solid #cfd5dc;
+      border-radius: 8px;
+      color: var(--ink);
+      background: white;
+      font: inherit;
+    }
+
+    input:focus, select:focus {
+      outline: 3px solid #b4233222;
+      border-color: var(--red);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+    }
+
+    .primary {
+      margin-top: 17px;
+      color: white;
+      background: var(--red);
+    }
+
+    .primary:hover { background: var(--red-dark); }
+
+    .secondary {
+      padding: 7px 10px;
+      color: var(--red-dark);
+      background: #fbeaec;
+      font-size: 12px;
+    }
+
+    .request-list { display: grid; gap: 10px; }
+
+    .request {
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .request strong { display: block; }
+    .request small { color: var(--muted); }
+
+    .tag {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      color: #8b1c29;
+      background: #fdecef;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .matches {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .match-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .match-row:last-child { border-bottom: 0; }
+    .match-row small { display: block; color: var(--muted); }
+    .blood-type { color: var(--red); font-weight: 800; }
+    .empty { color: var(--muted); font-size: 13px; }
+
+    footer {
+      margin-top: 20px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 12px;
+    }
+
+    @media (max-width: 760px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 440px) {
+      .topbar { padding-inline: 16px; }
+      main { padding-inline: 16px; }
+      .form-row { grid-template-columns: 1fr; gap: 0; }
+      .request { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">+</span> BloodLink</div>
+      <span class="demo-label">HACKATHON DEMO</span>
+    </div>
+  </header>
+
+  <main>
+    <h1>Blood bank dashboard</h1>
+    <p class="subheading">Track sample requests and view fictional donor records.</p>
+
+    <div class="notice">
+      Demo only: all donor data is fictional. Matches are suggestions for demonstration
+      and must be verified by qualified blood-bank staff.
+    </div>
+
+    <section class="stats" aria-label="Demo summary">
+      <div class="stat"><span>Open requests</span><strong id="openCount">2</strong></div>
+      <div class="stat"><span>Registered donors</span><strong>6</strong></div>
+      <div class="stat"><span>Units in demo stock</span><strong>28</strong></div>
+      <div class="stat"><span>Requests fulfilled</span><strong id="fulfilledCount">1</strong></div>
+    </section>
+
+    <div class="layout">
+      <section class="card">
+        <h2>Create a blood request</h2>
+        <form id="requestForm">
+          <div class="form-row">
+            <div>
+              <label for="bloodType">Blood type</label>
+              <select id="bloodType" required>
+                <option value="">Choose a type</option>
+                <option>O-</option><option>O+</option>
+                <option>A-</option><option>A+</option>
+                <option>B-</option><option>B+</option>
+                <option>AB-</option><option>AB+</option>
+              </select>
+            </div>
+            <div>
+              <label for="units">Units needed</label>
+              <input id="units" type="number" min="1" max="20" value="1" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label for="location">Area / hospital</label>
+              <input id="location" maxlength="60" placeholder="e.g. Central Hospital" required>
+            </div>
+            <div>
+              <label for="urgency">Urgency</label>
+              <select id="urgency" required>
+                <option>Routine</option><option>Urgent</option><option>Critical</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="primary" type="submit">Create request</button>
+        </form>
+
+        <div class="matches" id="matches" aria-live="polite">
+          <h2>Possible donor matches</h2>
+          <p class="empty">Create a request to see fictional demo matches.</p>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Recent requests</h2>
+        <div class="request-list" id="requestList"></div>
+      </section>
+    </div>
+
+    <footer>
+      Prototype only. Do not use for real donor outreach, eligibility decisions, or transfusion decisions.
+    </footer>
+  </main>
+
+  <script>
+    // Fictional data for the hackathon demo.
+    const donors = [
+      { name: "Demo Donor 1", type: "O-", area: "Central", lastDonation: "5 months ago" },
+      { name: "Demo Donor 2", type: "O+", area: "North", lastDonation: "8 months ago" },
+      { name: "Demo Donor 3", type: "A+", area: "Central", lastDonation: "7 months ago" },
+      { name: "Demo Donor 4", type: "B+", area: "South", lastDonation: "6 months ago" },
+      { name: "Demo Donor 5", type: "AB+", area: "Central", lastDonation: "9 months ago" },
+      { name: "Demo Donor 6", type: "A-", area: "North", lastDonation: "10 months ago" }
+    ];
+
+    let requests = [
+      { type: "O-", units: 2, location: "Central Hospital", urgency: "Critical", status: "Open" },
+      { type: "A+", units: 1, location: "North Clinic", urgency: "Urgent", status: "Open" },
+      { type: "B+", units: 3, location: "South Medical Center", urgency: "Routine", status: "Fulfilled" }
+    ];
+
+    const requestList = document.getElementById("requestList");
+    const requestForm = document.getElementById("requestForm");
+
+    function renderRequests() {
+      requestList.innerHTML = "";
+
+      requests.forEach((request, index) => {
+        const item = document.createElement("div");
+        item.className = "request";
+
+        const details = document.createElement("div");
+        const title = document.createElement("strong");
+        title.textContent = `${request.type} · ${request.units} unit${request.units === 1 ? "" : "s"}`;
+        const meta = document.createElement("small");
+        meta.textContent = `${request.location} · ${request.urgency} · ${request.status}`;
+        details.append(title, meta);
+
+        if (request.status === "Open") {
+          const button = document.createElement("button");
+          button.className = "secondary";
+          button.type = "button";
+          button.textContent = "Mark fulfilled";
+          button.addEventListener("click", () => {
+            requests[index].status = "Fulfilled";
+            renderRequests();
+          });
+          item.append(details, button);
+        } else {
+          item.append(details);
+        }
+
+        requestList.appendChild(item);
+      });
+
+      document.getElementById("openCount").textContent =
+        requests.filter(request => request.status === "Open").length;
+      document.getElementById("fulfilledCount").textContent =
+        requests.filter(request => request.status === "Fulfilled").length;
+    }
+
+    function showMatches(type, location) {
+      const area = location.toLowerCase();
+      const matches = donors.filter(donor =>
+        donor.type === type &&
+        (area.includes(donor.area.toLowerCase()) || donor.area.toLowerCase().includes(area))
+      );
+
+      const container = document.getElementById("matches");
+      container.innerHTML = "<h2>Possible donor matches</h2>";
+
+      if (matches.length === 0) {
+        const message = document.createElement("p");
+        message.className = "empty";
+        message.textContent = "No exact demo matches found. Try Central, North, or South in the location field.";
+        container.appendChild(message);
+        return;
+      }
+
+      matches.forEach(donor => {
+        const row = document.createElement("div");
+        row.className = "match-row";
+
+        const info = document.createElement("div");
+        info.textContent = donor.name;
+        const details = document.createElement("small");
+        details.textContent = `${donor.area} area · Last donation: ${donor.lastDonation}`;
+        info.appendChild(details);
+
+        const typeLabel = document.createElement("span");
+        typeLabel.className = "blood-type";
+        typeLabel.textContent = donor.type;
+
+        row.append(info, typeLabel);
+        container.appendChild(row);
+      });
+
+      const note = document.createElement("p");
+      note.className = "empty";
+      note.style.marginTop = "10px";
+      note.textContent = "Possible demo matches only; staff must verify compatibility and eligibility.";
+      container.appendChild(note);
+    }
+
+    requestForm.addEventListener("submit", event => {
+      event.preventDefault();
+
+      const type = document.getElementById("bloodType").value;
+      const units = Number(document.getElementById("units").value);
+      const location = document.getElementById("location").value.trim();
+      const urgency = document.getElementById("urgency").value;
+
+      if (!type || !location || units < 1) return;
+
+      requests.unshift({ type, units, location, urgency, status: "Open" });
+      renderRequests();
+      showMatches(type, location);
+      requestForm.reset();
+      document.getElementById("units").value = 1;
+    });
+
+    renderRequests();
+  </script>
+</body>
+</html>
